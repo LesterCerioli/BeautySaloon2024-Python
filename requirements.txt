@@ -1,5 +1,6 @@
 Flask==2.1.1
 Flask-SQLAlchemy==2.5.1
 Flask-Migrate==3.1.0
-Flask-Swagger-UI==0.0.4
-pyodbc==4.0.32
+Flask-Swagger-UI==3.36.0
+pyodbc==4.0.35
+pytest
