@@ -1,8 +1,8 @@
 from uuid import uuid4
-from datetime import date, time
-from .app import db # type: ignore
+from .app import db  # type: ignore
+from abc import ABC, abstractmethod
 
-class Customer(db.Model):
+class Customer(db.Model, ICustomer):
     __tablename__ = 'customers'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
@@ -33,3 +33,18 @@ class Customer(db.Model):
         if not value:
             raise ValueError("O número de telefone deve ser informado")
         self._telephone_number = value
+
+    def get_id(self) -> str:
+        return self.id
+
+    def get_customer_name(self) -> str:
+        return self.customer_name
+
+    def set_customer_name(self, customer_name: str):
+        self.customer_name = customer_name
+
+    def get_telephone_number(self) -> str:
+        return self.telephone_number
+
+    def set_telephone_number(self, telephone_number: str):
+        self.telephone_number = telephone_number
