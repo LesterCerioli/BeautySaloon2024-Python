@@ -1,0 +1,6 @@
+
+
+from domain_interfaces.iappointment_repository import IAppointmentRepository
+
+
+class AppointmentRepository(IAppointmentRepository)

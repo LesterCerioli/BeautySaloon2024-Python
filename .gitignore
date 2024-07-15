@@ -126,3 +126,13 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+.vs/
+.venv/
+.beautyenv/
+beautyenv/Scripts/pip.exe
+beautyenv/Scripts/pip3.12.exe
+beautyenv/Scripts/pip3.exe
+beautyenv/Scripts/python_d.exe
+beautyenv/Scripts/python.exe
+beautyenv/Scripts/pythonw_d.exe
+beautyenv/Scripts/pythonw.exe
