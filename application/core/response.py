@@ -1,9 +1,7 @@
-
-
 from collections import UserList
 from typing import Any, Iterable, List, TypeVar
 
-TRequest = TypeVar('TRequest', bound=BaseModel) # type: ignore
+TRequest = TypeVar('TRequest', bound='BaseModel')  # Assuming BaseModel is defined elsewhere
 TResponse = TypeVar('TResponse', bound='Response')
 
 class ReadOnlyCollection(UserList):
@@ -30,18 +28,18 @@ class ReadOnlyCollection(UserList):
 
 class Response:
     def __init__(self, result: Any = None):
-        self._message: List[str]  = []
-        self.errors: Iterable[str] = ReadOnlyCollection(self._messages) # type: ignore
+        self._message: List[str]  = []  # Corrected variable name to _message
+        self.errors: Iterable[str] = ReadOnlyCollection(self._message)  # Corrected reference to _message
         self.result: Any = result
         
     def add_error(self, message: str) -> 'Response':
-        self._messages.append(message)
+        self._message.append(message)  # Corrected variable name to _message
         return self
     
 response = Response()
 response.add_error("An error occurred")
-print(list(response.errors))  # ['An error occurred']
-print(response.result)        # None
+print(list(response.errors))  # Output: ['An error occurred']
+print(response.result)        # Output: None
 
 response_with_result = Response(result="Success")
-print(response_with_result.result)  # 'Success'
+print(response_with_result.result)  # Output: 'Success'

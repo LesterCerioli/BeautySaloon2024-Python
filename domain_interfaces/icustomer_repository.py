@@ -1,24 +1,30 @@
-from uuid import uuid4
-from .app import db  # type: ignore
 from abc import ABC, abstractmethod
+from typing import List, Optional
+
+from sqlalchemy.orm import Session
+
+from models.customer import Customer
+
 
 class ICustomerRepository(ABC):
+    
     @abstractmethod
-    def get_id(self) -> str:
+    def create_customer(self, customer_name: str, telephone_number: str, email_address: Optional[str] = None) -> Customer:
         pass
-
+        
+    
     @abstractmethod
-    def get_customer_name(self) -> str:
+    def get_customer_by_telephone(self, telephone_number: str) -> Optional[Customer]:
         pass
-
+    
     @abstractmethod
-    def set_customer_name(self, customer_name: str):
+    def update_customer(self, customer_id: str, customer_name: Optional[str] = None, telephone_number: Optional[str] = None, email_address: Optional[str] = None) -> Optional[Customer]:
         pass
-
+    
     @abstractmethod
-    def get_telephone_number(self) -> str:
+    def delete_customer(self, customer_id: str) -> Optional[Customer]:
         pass
-
+    
     @abstractmethod
-    def set_telephone_number(self, telephone_number: str):
+    def list_customers(self) -> List[Customer]:
         pass

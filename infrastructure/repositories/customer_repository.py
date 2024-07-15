@@ -1,0 +1,6 @@
+
+
+from domain_interfaces.icustomer_repository import ICustomerRepository
+
+
+class CustomerRepository(ICustomerRepository)

@@ -1,82 +1,46 @@
-from abc import ABC, abstractmethod
-from datetime import date, time
+from models.appointment import Appointment
+from sqlalchemy.orm import sessionmaker
 
-class IAppointmentRepository(ABC):
-    @abstractmethod
-    def get_id(self) -> str:
-        pass
 
-    @abstractmethod
-    def get_client_name(self) -> str:
-        pass
 
-    @abstractmethod
-    def set_client_name(self, client_name: str):
-        pass
+class IAppointmentRepository:
+    def __init__(self, engine):
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
-    @abstractmethod
-    def get_appointment_date(self) -> date:
-        pass
+    def create_appointment(self, customer_name, appointment_date, appointment_time, attendant_name, customer):
+        appointment = Appointment(
+            customer_name=customer_name,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time,
+            attendant_name=attendant_name,
+            customer=customer
+        )
+        self.session.add(appointment)
+        self.session.commit()
+        return appointment
+    
 
-    @abstractmethod
-    def set_appointment_date(self, appointment_date: date):
-        pass
+    def update_appointment(self, appointment_id, customer_name=None, appointment_date=None, appointment_time=None, attendant_name=None, customer=None):
+        appointment = self.get_appointment_by_id(appointment_id)
+        if appointment:
+            if customer_name:
+                appointment.client_name = customer_name
+            if appointment_date:
+                appointment.appointment_date = appointment_date
+            if appointment_time:
+                appointment.appointment_time = appointment_time
+            if attendant_name:
+                appointment.attendant_name = attendant_name
+            if customer:
+                appointment.customer = customer
+                appointment.customer_id = customer.id
+            self.session.commit()
+        return appointment
 
-    @abstractmethod
-    def get_appointment_time(self) -> time:
-        pass
-
-    @abstractmethod
-    def set_appointment_time(self, appointment_time: time):
-        pass
-
-    @abstractmethod
-    def get_attendant_name(self) -> str:
-        pass
-
-    @abstractmethod
-    def set_attendant_name(self, attendant_name: str):
-        pass
-
-    @abstractmethod
-    def get_customer_id(self) -> str:
-        pass
-
-class MockAppointmentRepository(IAppointmentRepository):
-    def __init__(self):
-        self._id = "1"
-        self._client_name = ""
-        self._appointment_date = date.today()
-        self._appointment_time = time(12, 0)
-        self._attendant_name = ""
-        self._customer_id = "123"
-
-    def get_id(self) -> str:
-        return self._id
-
-    def get_client_name(self) -> str:
-        return self._client_name
-
-    def set_client_name(self, client_name: str):
-        self._client_name = client_name
-
-    def get_appointment_date(self) -> date:
-        return self._appointment_date
-
-    def set_appointment_date(self, appointment_date: date):
-        self._appointment_date = appointment_date
-
-    def get_appointment_time(self) -> time:
-        return self._appointment_time
-
-    def set_appointment_time(self, appointment_time: time):
-        self._appointment_time = appointment_time
-
-    def get_attendant_name(self) -> str:
-        return self._attendant_name
-
-    def set_attendant_name(self, attendant_name: str):
-        self._attendant_name = attendant_name
-
-    def get_customer_id(self) -> str:
-        return self._customer_id
+    def delete_appointment(self, appointment_id):
+        appointment = self.get_appointment_by_id(appointment_id)
+        if appointment:
+            self.session.delete(appointment)
+            self.session.commit()
+        return appointment
