@@ -1,18 +1,20 @@
 from uuid import uuid4
-from .app import db  # type: ignore
-from abc import ABC, abstractmethod
 
-class Customer(db.Model, ICustomer):
+from value_objects.telephone import Telephone
+from .app import db  # type: ignore
+
+
+class Customer(db.Model):
     __tablename__ = 'customers'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
     _customer_name = db.Column('customer_name', db.String(80), nullable=False)
-    _telephone_number = db.Column('telephone_number', db.String(20), nullable=False)
+    _telephone_number = db.Column('telephone_number', db.String(11), nullable=False)
 
-    def __init__(self, customer_name: str, telephone_number: str):
+    def __init__(self, customer_name: str, telephone: Telephone):
         self.id = str(uuid4())
         self.customer_name = customer_name
-        self.telephone_number = telephone_number
+        self.telephone = telephone
 
     @property
     def customer_name(self) -> str:
@@ -25,14 +27,15 @@ class Customer(db.Model, ICustomer):
         self._customer_name = value
 
     @property
-    def telephone_number(self) -> str:
-        return self._telephone_number
+    def telephone(self) -> Telephone:
+        ddd, number = self._telephone_number[:2], self._telephone_number[2:]
+        return Telephone(ddd=ddd, telephone_number=number)
 
-    @telephone_number.setter
-    def telephone_number(self, value: str):
+    @telephone.setter
+    def telephone(self, value: Telephone):
         if not value:
             raise ValueError("O número de telefone deve ser informado")
-        self._telephone_number = value
+        self._telephone_number = value.ddd + value.telephone_number
 
     def get_id(self) -> str:
         return self.id
@@ -43,8 +46,8 @@ class Customer(db.Model, ICustomer):
     def set_customer_name(self, customer_name: str):
         self.customer_name = customer_name
 
-    def get_telephone_number(self) -> str:
-        return self.telephone_number
+    def get_telephone(self) -> Telephone:
+        return self.telephone
 
-    def set_telephone_number(self, telephone_number: str):
-        self.telephone_number = telephone_number
+    def set_telephone(self, telephone: Telephone):
+        self.telephone = telephone
