@@ -14,7 +14,7 @@ from .models import Appointment, Customer # type: ignore
 
 class CreateAppointmentCommand(BaseModel):
     id: UUID = Field(default_factory=uuid4, init=False)
-    client_name: str
+    customer_name: str
     appointment_date: date
     appointment_time: time
     attendant_name: str
@@ -22,7 +22,7 @@ class CreateAppointmentCommand(BaseModel):
 
     def get_entity(self, customer: Customer) -> Appointment:
         return Appointment(
-            client_name=self.client_name,
+            customer_name=self.customer_name,
             appointment_date=self.appointment_date,
             appointment_time=self.appointment_time,
             attendant_name=self.attendant_name,

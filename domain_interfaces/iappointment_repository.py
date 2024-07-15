@@ -8,6 +8,14 @@ class IAppointmentRepository:
         Session = sessionmaker(bind=engine)
         self.session = Session()
 
+    def get_by_appointment_date(self, appointment_date):
+        appointments = self.session.query(Appointment).filter_by(appointment_date=appointment_date).all()
+        return appointments
+
+    def get_by_appointment_time(self, appointment_time):
+        appointments = self.session.query(Appointment).filter_by(appointment_time=appointment_time).all()
+        return appointments
+    
     def create_appointment(self, customer_name, appointment_date, appointment_time, attendant_name, customer):
         appointment = Appointment(
             customer_name=customer_name,
