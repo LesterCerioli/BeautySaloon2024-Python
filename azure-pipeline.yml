@@ -1,0 +1,42 @@
+# Nome da pipeline
+name: Python 3.12 Pipeline
+
+# Gatilhos para a execução da pipeline
+trigger:
+  branches:
+    include:
+      - develop
+
+# Jobs da pipeline
+jobs:
+- job: Build
+  pool:
+    vmImage: 'windows-latest'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.12.x'
+      addToPath: true
+
+  - powershell: Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
+    displayName: 'Set PowerShell Execution Policy to Unrestricted'
+
+  - script: |
+      python -m venv venv
+      .\venv\Scripts\activate
+      python -m pip install --upgrade pip
+      python -m pip install -r requirements.txt
+    displayName: 'Setup Python 3.12 and install dependencies'
+
+  - script: |
+      .\venv\Scripts\activate
+      python -m unittest discover
+    displayName: 'Run Unit Tests'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'Python 3.12 Unit Tests'
