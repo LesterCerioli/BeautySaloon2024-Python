@@ -9,7 +9,7 @@ trigger:
 
 # Pool de agentes
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'dsx'
 
 # Variáveis
 variables:
