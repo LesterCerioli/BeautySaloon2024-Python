@@ -11,13 +11,16 @@ trigger:
 jobs:
 - job: Build
   pool:
-    vmImaze: 'windows-latest'
+    vmImage: 'windows-latest'
 
   steps:
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '3.12.x'
       addToPath: true
+
+  - powershell: Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
+    displayName: 'Set PowerShell Execution Policy to Unrestricted'
 
   - script: |
       python -m venv venv
