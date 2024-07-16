@@ -11,7 +11,7 @@ trigger:
 jobs:
 - job: Build
   pool:
-    name: 'dsx'
+    vmImaze: 'windows-latest'
 
   steps:
   - task: UsePythonVersion@0
