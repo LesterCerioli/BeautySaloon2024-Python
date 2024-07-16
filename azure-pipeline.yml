@@ -1,57 +1,39 @@
 # Nome da pipeline
-name: 'Python 3.12 Pipeline'
+name: Python 3.12 Pipeline
 
-# Disparadores
+# Gatilhos para a execução da pipeline
 trigger:
   branches:
     include:
-      - '*'
+      - develop
 
-# Pool de agentes
-pool:
-  name: 'dsx'
+# Jobs da pipeline
+jobs:
+- job: Build
+  pool:
+    name: 'dsx'
 
-# Variáveis
-variables:
-  python_version: '3.12'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.12.x'
+      addToPath: true
 
-# Estágios do Pipeline
-stages:
-  - stage: Install
-    displayName: 'Install Dependencies'
-    jobs:
-      - job: Install
-        displayName: 'Install'
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '$(python_version)'
-              addToPath: true
-            displayName: 'Use Python $(python_version)'
+  - script: |
+      python -m venv venv
+      .\venv\Scripts\activate
+      python -m pip install --upgrade pip
+      python -m pip install -r requirements.txt
+    displayName: 'Setup Python 3.12 and install dependencies'
 
-          - script: |
-              python -m pip install --upgrade pip
-              pip install -r requirements.txt
-            displayName: 'Install Dependencies'
+  - script: |
+      .\venv\Scripts\activate
+      python -m unittest discover
+    displayName: 'Run Unit Tests'
 
-  - stage: Test
-    displayName: 'Run Tests'
-    dependsOn: Install
-    jobs:
-      - job: Test
-        displayName: 'Test'
-        steps:
-          - script: |
-              pytest
-            displayName: 'Run Tests'
-
-  - stage: Build
-    displayName: 'Build Project'
-    dependsOn: Test
-    jobs:
-      - job: Build
-        displayName: 'Build'
-        steps:
-          - script: |
-              python setup.py sdist bdist_wheel
-            displayName: 'Build Project'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'Python 3.12 Unit Tests'
