@@ -1,7 +1,7 @@
+# Configuration settings for PostgreSQL
 import os
 
-class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///appointments.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SWAGGER_URL = '/swagger'
-    API_URL = '/static/swagger.json'
+
+SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@localhost:5432/beauty_salon_db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SECRET_KEY = os.environ.get('SECRET_KEY', 'mysecretkey')

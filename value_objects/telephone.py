@@ -1,25 +1,39 @@
+from dataclasses import dataclass
+from typing import Optional
+import re
 
+@dataclass(frozen=True)
+class Telephone:
+    telephone_number: str
+    telephone_region: str
 
-from dataclasses import Field
-from wsgiref.validate import validator
+    def __post_init__(self):
+        if not self._is_valid_telephone(self.telephone_number):
+            raise ValueError("Invalid telephone number")
+    
+    @staticmethod
+    def _is_valid_telephone(telephone: str) -> bool:
+        # Remove non-digit characters
+        shorten_num = re.sub(r"[^0-9]", "", telephone)
 
+        # Validate the length of the telephone number
+        if len(shorten_num) == 13:
+            return True
+        else:
+            return False
 
-class Telephone(BaseModel): # type: ignore
-    ddd: Field(..., min_length=2, max_length=2, regex=r'^\d{2}$') # type: ignore
-    telephone_number: str = Field(..., min_length=9, max_length=9, regex=r'^\d{9}$')
-    
-    @validator('ddd')
-    def validate_ddd(cls, v):
-        if not v.isdigit():
-            raise ValueError("DDD deve possuir apenas dois algarismos")
-        return v
-    
-    @validator('telephone_number')
-    def validate_telephone_number(cls, v):
-        if not v.isdigit():
-            raise ValueError("O número do telefone deve conter APENAS 9 dígitos.")
-        return v
-    def __str__(self):
-        return f"({self.ddd}) {self.telephone_number}"
-    
-    
+    def __str__(self) -> str:
+        return f"{self.telephone_number} ({self.telephone_region})"
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Telephone):
+            return False
+        return (self.telephone_number == other.telephone_number and
+                self.telephone_region == other.telephone_region)
+
+    def __hash__(self) -> int:
+        return hash((self.telephone_number, self.telephone_region))
+
+    def get_equality_components(self) -> list[str]:
+        # Return components used to determine equality
+        return [self.telephone_number, self.telephone_region]
