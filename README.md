@@ -22,9 +22,10 @@ Welcome to the Beauty Saloon Application! This project is designed to manage app
 
 ## Technologies
 - Python 3.12
-- Flask
+- FastAPI
 - SQLAlchemy
 - SQL Server
+- Swagger UI
 
 ## Installation
 
