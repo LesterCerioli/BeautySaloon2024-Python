@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from typing import List, Optional
 
-# Assuming Saloon entity is defined in another module
+
 class Saloon:
     def __init__(self, fantasy_name: str = None, social_reason: str = None, cnpj: str = None, 
                 owner_name: str = None, telephone: str = None, address: str = None, district: str = None):
@@ -103,7 +103,7 @@ class SaloonService:
             "end_time": str(datetime.now())
         }
 
-        # Append the log entry to the JSON log file
+        
         try:
             if os.path.exists(self.log_file):
                 with open(self.log_file, 'r+') as f:
